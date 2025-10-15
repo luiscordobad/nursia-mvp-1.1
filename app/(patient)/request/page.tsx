@@ -1,38 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { supabaseBrowser } from '@/lib/supabaseBrowser'
-
-export default function PatientRequest() {
-  const [userId, setUserId] = useState<string|undefined>()
-  const [form, setForm] = useState({ tipo_servicio:'', ubicacion:'', fecha_inicio:'', fecha_fin:'', requerimientos:'' })
-
+export default function PatientRequest(){
+  const [userId,setUserId]=useState<string|undefined>(); const [form,setForm]=useState({ tipo_servicio:'', ubicacion:'', fecha_inicio:'', fecha_fin:'', requerimientos:'' })
   useEffect(()=>{ supabaseBrowser.auth.getUser().then(({data})=>setUserId(data.user?.id)) },[])
-
-  async function submit() {
-    if (!userId) return alert('Inicia sesión primero')
-    await supabaseBrowser.from('solicitudes').insert({
-      paciente_id: userId,
-      tipo_servicio: form.tipo_servicio,
-      ubicacion: form.ubicacion,
-      fecha_inicio: form.fecha_inicio,
-      fecha_fin: form.fecha_fin,
-      requerimientos: form.requerimientos,
-      estado: 'pendiente'
-    })
-    alert('Solicitud enviada. Te avisaremos al asignar un enfermero.')
-  }
-
-  return (
-    <div className="container py-10">
-      <h1 className="h1 mb-4">Solicitar enfermero</h1>
-      <div className="grid gap-3 max-w-xl">
-        <input className="border p-2" placeholder="Tipo de servicio" onChange={e=>setForm({...form,tipo_servicio:e.target.value})} />
-        <input className="border p-2" placeholder="Ubicación" onChange={e=>setForm({...form,ubicacion:e.target.value})} />
-        <input className="border p-2" type="datetime-local" onChange={e=>setForm({...form,fecha_inicio:e.target.value})} />
-        <input className="border p-2" type="datetime-local" onChange={e=>setForm({...form,fecha_fin:e.target.value})} />
-        <textarea className="border p-2" placeholder="Requerimientos especiales" onChange={e=>setForm({...form,requerimientos:e.target.value})} />
-        <button className="btn" onClick={submit}>Enviar solicitud</button>
-      </div>
-    </div>
-  )
-}
+  async function submit(){ if(!userId) return alert('Inicia sesión primero'); await supabaseBrowser.from('solicitudes').insert({ paciente_id:userId, tipo_servicio:form.tipo_servicio, ubicacion:form.ubicacion, fecha_inicio:form.fecha_inicio, fecha_fin:form.fecha_fin, requerimientos:form.requerimientos, estado:'pendiente' }); alert('Solicitud enviada. Te avisaremos al asignar un enfermero.') }
+  return(<div className="container py-10"><h1 className="h1 mb-4">Solicitar enfermero</h1><div className="grid gap-3 max-w-xl"><input className="border p-2" placeholder="Tipo de servicio" onChange={e=>setForm({...form,tipo_servicio:e.target.value})}/><input className="border p-2" placeholder="Ubicación" onChange={e=>setForm({...form,ubicacion:e.target.value})}/><input className="border p-2" type="datetime-local" onChange={e=>setForm({...form,fecha_inicio:e.target.value})}/><input className="border p-2" type="datetime-local" onChange={e=>setForm({...form,fecha_fin:e.target.value})}/><textarea className="border p-2" placeholder="Requerimientos especiales" onChange={e=>setForm({...form,requerimientos:e.target.value})}/><button className="btn" onClick={submit}>Enviar solicitud</button></div></div>)}
